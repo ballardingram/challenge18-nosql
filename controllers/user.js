@@ -6,26 +6,22 @@ const userController = {
     getAllUser(req, res) {
         User.find({})
         .populate({
-            path: "Friends",
+            path: "friends",
             select: "-__v",
+            strictPopulate: false,
         })
-        .select("-__v")
-        .sort({_id: -1})
+        .select('-__v')
+        .sort({ _id: -1 })
         .then((dbUserData) => res.json(dbUserData))
         .catch((err) => {
             console.log(err);
-            res.sendStatus(400);
+            res.status(400).json(err);
         });
     },
 
     // ROUTES > GET SINGLE USER
     getUserById({params}, res) {
         User.findOne({ _id: params.id})
-        .populate({
-            path: "Thoughts",
-            select: "-__v",
-        })
-        .select("-__v")
         .then((dbUserData) => {
             if (!dbUserData) {
                 return res
@@ -64,15 +60,16 @@ const userController = {
     },
 
     // ROUTES > DELETE USER
-    deleteUser({ params }, res) {
-        User.findOneandDelete({ _id: params.id})
+    deleteUser({params}, res) {
+        User.findOneAndDelete({_id: params.id})
         .then((dbUserData) => {
-            if (!dbUserData) {
-                return res.status(404).json({ message: "No user found with this ID!"});
+            if(!dbUserData) {
+                return res.status(404).json({message: "No user with this ID!"});
             }
+            return Thought.deleteMany({_id: {$in: dbUserData.thoughts}});
         })
         .then(() => {
-            res.json({ message: "User deleted!"});
+            res.json({message: "User and their thoughts, deleted!"});
         })
         .catch((err) => res.json(err));
     },

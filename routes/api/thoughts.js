@@ -1,8 +1,8 @@
 // MAPPING > THROUGH ROUTE
 const router = require('express').Router();
-const { put } = require('.');
+
 const {
-    getAllThought,
+    getAllThoughts,
     getThoughtById,
     createThought,
     updateThought,
@@ -14,7 +14,7 @@ const {
 // ROUTES > GET ALL THOUGHTS
 router
     .route('/')
-    .get(getAllThought)
+    .get(getAllThoughts)
     .post(createThought);
 
 // ROUTES > GET SINGLE THOUGHT

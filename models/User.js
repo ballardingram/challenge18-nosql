@@ -6,14 +6,15 @@ const UserSchema = new Schema(
             type: String,
             unique: true,
             trim: true,
-            required: "Username is Required",
+            required: true
         },
 
         email: {
             type: String,
             unique: true,
-            required: "Email is Required",
-            match: [/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/]
+            required: true,
+            // match: [/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/]//
+            match: [/.+@.+\..+/, 'Enter a valid e-mail address!']
         },
 
         Thoughts: [
@@ -40,7 +41,7 @@ const UserSchema = new Schema(
 );
 
 UserSchema.virtual("friendCount").get(function() {
-    return this.friends.length;
+    return this.Friends.length;
 });
 
 const User = model("User", UserSchema);

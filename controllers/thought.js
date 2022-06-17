@@ -3,14 +3,9 @@ const { Thought, User } = require("../models");
 const thoughtController = {
 
     // ROUTES > GET ALL THOUGHTS
-    getAllThought(req, res) {
+    getAllThoughts(req, res) {
         Thought.find({})
-        .populate({
-            path: "Reactions",
-            select: "-__v",
-        })
-        .select("-__v")
-        .sort({ _id: -1 })
+        .select('-__v')
         .then((dbThoughtData) => res.json(dbThoughtData))
         .catch((err) => {
             console.log(err);
@@ -21,40 +16,38 @@ const thoughtController = {
     // ROUTES > GET SINGLE THOUGHT BY ID
     getThoughtById({params}, res) {
         Thought.findOne({_id: params.id})
-        .populate({
-            path: "Reactions",
-            select: "-__v",
-        })
-        .select("-__v")
         .then((dbThoughtData) => {
             if (!dbThoughtData) {
-                return res.status(404).json({message: "No thought with this ID!"});
+                res.status(404).json({message: "No thought with this ID!"});
+                return;
             }
             res.json(dbThoughtData);
         })
         .catch((err) => {
             console.log(err);
-            res.sendStatus(400);
+            res.status(400).json(err);
         });
     },
 
     // ROUTES > CREATE THOUGHT
-    createThought({ params, body }, res) {
+    createThought({ body }, res) {
+        console.log(body);
         Thought.create(body)
-        .then(({_id}) => {
+        .then(({thoughtData}) => {
             return User.findOneAndUpdate(
                 {_id: body.userID},
-                {$push: {thoughts: _id}},
+                {$push: {thoughts: thoughtData._id}},
                 {new: true}
             );
         })
         .then((dbUserData) => {
             if(!dbUserData) {
-                return res
+                res
                 .status(404)
                 .json({ message: "No user found. Though added!"});
+                return;
             }
-            res.json({ message: "Thought added!"});
+            res.json(dbUserData);
         })
         .catch((err) => res.json(err));
     },
