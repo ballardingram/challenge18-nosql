@@ -5,7 +5,12 @@ const thoughtController = {
     // ROUTES > GET ALL THOUGHTS
     getAllThoughts(req, res) {
         Thought.find({})
+        .populate({
+            path: 'reactions',
+            select: '-__v',
+        })
         .select('-__v')
+        .sort({ _id: -1 })
         .then((dbThoughtData) => res.json(dbThoughtData))
         .catch((err) => {
             console.log(err);
@@ -30,25 +35,24 @@ const thoughtController = {
     },
 
     // ROUTES > CREATE THOUGHT
-    createThought({ body }, res) {
-        console.log(body);
+    createThought({ params, body }, res) {
         Thought.create(body)
-        .then(({thoughtData}) => {
+        .then(({_id }) => {
             return User.findOneAndUpdate(
-                {_id: body.userID},
-                {$push: {thoughts: thoughtData._id}},
+                {_id: body.userId},
+                {$push: {thoughts: _id}},
                 {new: true}
             );
         })
         .then((dbUserData) => {
             if(!dbUserData) {
-                res
+                return res
                 .status(404)
-                .json({ message: "No user found. Though added!"});
-                return;
+                .json({message: "Thought created. No user ID found!"});
             }
-            res.json(dbUserData);
-        })
+
+            res.json({message: "Thought added!"})
+            })
         .catch((err) => res.json(err));
     },
 
