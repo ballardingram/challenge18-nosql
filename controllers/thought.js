@@ -99,10 +99,9 @@ const thoughtController = {
     // ROUTES > ADD REACTION
     addReaction ({ params, body}, res) {
         Thought.findOneAndUpdate(
-            {_id: params.thoughtID},
+            {_id: params.thoughtId},
             {$addToSet: {reactions: body}},
-            {new: true,
-            runValidators: true}
+            {new: true}
         )
         .then((dbThoughtData) => {
             if(!dbThoughtData) {
@@ -116,8 +115,10 @@ const thoughtController = {
 
     // ROUTES > DELETE REACTION
     deleteReaction ({ params }, res) {
-        Thought.findOneAndDelete(
-            {_id: params.id}
+        Thought.findOneAndUpdate(
+            {_id: params.thoughtId},
+            {$pull: {reactions: {reactionId: params.reactionId}}},
+            {new: true}
         )
         .then(dbThoughtData => res.json(dbThoughtData))
         .catch(err => res.json(err));
