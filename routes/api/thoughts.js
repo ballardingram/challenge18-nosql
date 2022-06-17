@@ -1,4 +1,4 @@
-// MAPPING > THOUGH ROUTE
+// MAPPING > THROUGH ROUTE
 const router = require('express').Router();
 const { put } = require('.');
 const {
