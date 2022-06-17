@@ -1,5 +1,21 @@
 {
-  "dependencies": {
-    "mongodb": "^4.7.0"
-  }
+  "name": "challenge18",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ballardingram/challenge18-nosql.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ballardingram/challenge18-nosql/issues"
+  },
+  "homepage": "https://github.com/ballardingram/challenge18-nosql#readme"
 }
