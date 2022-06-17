@@ -77,11 +77,10 @@ const userController = {
     //ROUTES > ADD FRIEND
     addFriend({ params}, res) {
         User.findOneAndUpdate(
-            {_id: params.userID},
-            {$addToSet: {friends: params.friendID}},
-            {new: true,
-            runValidators: true}
-        )
+            {_id: params.userId},
+            {$addToSet: {Friends: params.friendId}},
+            {new: true
+            })
         .then((dbUserData) => {
             if (!dbUserData) {
                 res.status(404).json({ message: "No friend found with this ID!"});
@@ -94,9 +93,9 @@ const userController = {
 
     // ROUTES > DELETE FRIEND
     deleteFriend({ params}, res) {
-        User.findOneAndDelete(
-            {_id: params.userID},
-            {$pull: {friends: params.friendID}},
+        User.findOneAndUpdate(
+            {_id: params.userId},
+            {$pull: {Friends: params.friendId}},
             {new: true }
         )
         .then((dbUserData) => {
@@ -105,8 +104,8 @@ const userController = {
             }
             res.json(dbUserData);
         })
-        .catch((err) => res.json(err));
-    },
+        .catch(err => res.status(400).json(err));
+    }
 };
 
 module.exports = userController;
